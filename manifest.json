@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "HTML Image Info",
+  "version": "1.0",
+  "description": "Displays information about HTML images in the active tab.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  }
+}
