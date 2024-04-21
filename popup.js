@@ -66,11 +66,11 @@ chrome.tabs.query({ active: !0, currentWindow: !0 }, function (tabs) {
                 totalWeightElement = document.createElement("p");
               (totalWeightElement.innerHTML = `<strong>Total Image Weight:</strong> ${totalImageWeightKB.toFixed(
                 2
-              )} MB`),
+              )} KB`),
                 headerElement.appendChild(totalWeightElement);
             })
             .catch((error) => {
-              console.error("Error calculating total image weight:", error);
+              console.error("Error calculating total image weight :", error);
             });
       }
     }
