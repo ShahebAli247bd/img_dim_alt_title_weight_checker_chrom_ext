@@ -298,12 +298,15 @@ function displayFontFamilyInfo(fontFamilies) {
     fontFamilyElement.appendChild(fontFamilyList);
   }
 }
+
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
   console.log("Document is ready");
 
   // Function to create PDF of the active tab's content
   function createPDF() {
-    alert("I am clicked")
     console.log("createPDF function called");
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       chrome.scripting.executeScript(
@@ -313,8 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Error executing script:", chrome.runtime.lastError.message);
             return;
           }
-          const content = results[0].result;
-          generatePDF(content);
+          generatePDF(results[0].result);
         }
       );
     });
@@ -322,15 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Function to capture content of the active tab
   function captureContent() {
-    return new Promise((resolve, reject) => {
-      html2canvas(document.body).then((canvas) => {
-        const dataUrl = canvas.toDataURL('image/png');
-        resolve(dataUrl);
-      }).catch((error) => {
-        console.error("Error capturing content with html2canvas:", error);
-        reject(error);
-      });
-    });
+    return document.documentElement.innerHTML;
   }
 
   // Function to generate PDF using jsPDF
@@ -342,25 +336,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const img = new Image();
-
-    img.onload = function() {
-      const imgProps = doc.getImageProperties(img);
-      const pdfWidth = doc.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      doc.addImage(content, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      doc.save("page-content.pdf");
-    };
-
-    img.onerror = function() {
-      console.error("Failed to load the image for the PDF");
-    };
-
-    img.src = content;
+    doc.text(content, 10, 10);
+    doc.save("page-content.pdf");
   }
+
+  // Add event listener to analyze button
+  document.getElementById("analyzeButton").addEventListener("click", analyzePage());
 
   // Add event listener to create PDF button
   document.getElementById("createPDFButton").addEventListener("click", createPDF);
+
+  // Existing analyzePage and other functions here...
 
   // Test if jsPDF is loaded
   console.log("Checking if jsPDF is loaded:", window.jspdf && window.jspdf.jsPDF);
@@ -370,6 +356,3 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error("jsPDF library is not loaded correctly");
   }
 });
-
- // Add event listener to analyze button
- document.getElementById("analyzeButton").addEventListener("click", analyzePage());
